@@ -1,0 +1,29 @@
+name: 'Set up MATLAB'
+description: 'Set up env vars for MATLAB'
+author: 'Ray Zimmerman'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure MATLAB
+      run: |
+        export MATLAB_REL=`ls /usr/local/MATLAB`
+        echo "MATLAB_REL=${MATLAB_REL}" >> $GITHUB_ENV
+        echo "IS_MATLAB=1" >> $GITHUB_ENV
+        echo "IS_OCTAVE=0" >> $GITHUB_ENV
+        echo "ML_NAME=MATLAB" >> $GITHUB_ENV
+        echo "ML_CMD=/usr/local/MATLAB/${MATLAB_REL}/bin/matlab -nojvm -batch" >> $GITHUB_ENV
+        echo "ML_PATHVAR=MATLABPATH" >> $GITHUB_ENV
+      shell: bash
+#         export MATLAB_VER=`matlab -nojvm -batch "fprintf('%s', ver('matlab').Version)"`
+
+    - name: Set MATLAB_VER, ML_VER
+      run: |
+        export MATLAB_VER=${MATLAB_REL}
+        echo "MATLAB_VER=${MATLAB_VER}" >> $GITHUB_ENV
+        echo "ML_VER=${MATLAB_VER}" >> $GITHUB_ENV
+      shell: bash
+
+branding:
+  icon: 'zap'
+  color: 'yellow'
