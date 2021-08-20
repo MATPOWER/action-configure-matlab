@@ -2,17 +2,25 @@ name: 'Set up MATLAB'
 description: 'Set up env vars for MATLAB'
 author: 'Ray Zimmerman'
 
+inputs:
+  nojvm:    # id of input
+    description: 'uses -nojvm flag, if true (default = true)'
+    required: false
+    default: true
+
 runs:
   using: "composite"
   steps:
     - name: Configure MATLAB
       run: |
         export MATLAB_REL=`ls /usr/local/MATLAB`
+        export FLAGS="-batch"
+        ${{ inputs.nojvm }} && export FLAGS="-nojvm $FLAGS"
         echo "MATLAB_REL=${MATLAB_REL}" >> $GITHUB_ENV
         echo "IS_MATLAB=1" >> $GITHUB_ENV
         echo "IS_OCTAVE=0" >> $GITHUB_ENV
         echo "ML_NAME=MATLAB" >> $GITHUB_ENV
-        echo "ML_CMD=/usr/local/MATLAB/${MATLAB_REL}/bin/matlab -nojvm -batch" >> $GITHUB_ENV
+        echo "ML_CMD=/usr/local/MATLAB/${MATLAB_REL}/bin/matlab $FLAGS" >> $GITHUB_ENV
         echo "ML_PATHVAR=MATLABPATH" >> $GITHUB_ENV
       shell: bash
 #         export MATLAB_VER=`matlab -nojvm -batch "fprintf('%s', ver('matlab').Version)"`

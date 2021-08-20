@@ -18,7 +18,12 @@ Sets the following environment variables.
 __Note:__ This action depends on [MATLAB][1] being installed first, using
 [`matlab-actions/setup-matlab`][2].
 
-### Inputs / Outputs
+### Optional Input
+
+- `nojvm` - (default `true`) set to `false` to exclude the `-nojvm` flag
+  from the definition of `ML_CMD`
+
+### Outputs
 
 None.
 
@@ -30,6 +35,8 @@ None.
 
     - name: Configure MATLAB
       uses: MATPOWER/action-configure-matlab@v1
+      with:
+        nojvm: false
 
     - name: MATLAB ${{ env.ML_VER }} Installed
       run: $ML_CMD ver
