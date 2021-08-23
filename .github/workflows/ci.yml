@@ -36,3 +36,24 @@ jobs:
 
     - name: MATLAB ${{ env.ML_VER }} Installed
       run: $ML_CMD ver
+
+    - name: Configure MATLAB w/OSQP
+      uses: ./.
+      with:
+        osqp: true
+
+    - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
+      run: $ML_CMD "fprintf('OSQP Version %s installed', osqp().version)"
+
+    - name: Configure MATLAB w/IPOPT
+      uses: ./.
+      with:
+        ipopt: true
+        os: ${{ matrix.os }}
+
+    - name: MATLAB ${{ env.ML_VER }} with IPOPT Installed
+      run: |
+        export IPOPT_TEST_PATH=${GITHUB_WORKSPACE}/.github/ipopt
+        ls -al $IPOPT_PATH
+        env $ML_PATHVAR=$IPOPT_TEST_PATH $ML_CMD "qps_ipopt([],[1; 1],[1 1],[2],[2],[1; 1],[1; 1],[1; 1],struct('verbose', 2));"
+        env $ML_PATHVAR=$IPOPT_TEST_PATH $ML_CMD "if ~have_feature_ipopt(), exit(1); end"
