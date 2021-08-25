@@ -37,8 +37,6 @@ runs:
         export FLAGS="-batch"
         ${{ inputs.nojvm }} && export FLAGS="-nojvm $FLAGS"
         echo "MATLAB_REL=${MATLAB_REL}" >> $GITHUB_ENV
-        echo "IS_MATLAB=1" >> $GITHUB_ENV
-        echo "IS_OCTAVE=0" >> $GITHUB_ENV
         echo "ML_NAME=MATLAB" >> $GITHUB_ENV
         echo "ML_CMD=/usr/local/MATLAB/${MATLAB_REL}/bin/matlab $FLAGS" >> $GITHUB_ENV
         echo "ML_PATHVAR=MATLABPATH" >> $GITHUB_ENV

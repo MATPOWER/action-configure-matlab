@@ -18,8 +18,6 @@ Sets the following environment variables.
 - `MATLAB_REL` set to the release name (e.g. `'R2021a'`) of installed
   [MATLAB][1]
 - `MATLAB_VER` set to the version (e.g. `'9.1.0'`) of installed [MATLAB][1],
-- `IS_MATLAB` set to 1
-- `IS_OCTAVE` set to 0
 - `ML_NAME` set to `MATLAB`
 - `ML_VER` set to same as `MATLAB_VER`
 - `ML_CMD` set to `/usr/local/MATLAB/${MATLAB_REL}/bin/matlab -nojvm -batch`
