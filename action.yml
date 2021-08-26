@@ -86,9 +86,6 @@ runs:
         ${{ inputs.ipopt }} && (${{ inputs.ipopt-cached }} && echo "Include IPOPT - cached - skip fetch" || echo "Fetch IPOPT - not cached") || echo "Skip IPOPT"
         ${{ inputs.ipopt }} && export IPOPT_PATH=$HOME/build/ipopt
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && mkdir -p $IPOPT_PATH
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && echo ${{ inputs.os }}
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && echo ${{ inputs.os == 'ubuntu-18.04' }}
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && echo "whatever"
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os == 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_4/ipopt_linux_4.mexa64 --output $IPOPT_PATH/ipopt.mexa64
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os != 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_5/ipopt_linux_5.mexa64 --output $IPOPT_PATH/ipopt.mexa64
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt_auxdata.m --output $IPOPT_PATH/ipopt_auxdata.m
