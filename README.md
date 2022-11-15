@@ -83,7 +83,7 @@ With support for JVM, IPOPT, and OSQP
       id: cache-ipopt
       env:
         cache-name: ipopt
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/build/ipopt
         key: ${{ env.cache-name }}-${{ matrix.platform }}-${{ matrix.os }}
@@ -92,7 +92,7 @@ With support for JVM, IPOPT, and OSQP
       id: cache-osqp
       env:
         cache-name: osqp
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/build/osqp-matlab
         key: ${{ env.cache-name }}-${{ matrix.platform }}-${{ matrix.os }}
