@@ -3,10 +3,6 @@ description: 'Set up env vars for MATLAB'
 author: 'Ray Zimmerman'
 
 inputs:
-  os:
-    description: 'required for ipopt to distinguish ubuntu-18.04 from 20.04/latest'
-    required: false
-    default: 'ubuntu-latest'
   nojvm:    # id of input
     description: 'uses -nojvm flag, if true (default = true)'
     required: false
@@ -31,17 +27,22 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Get run-matlab-command
+      run: |
+        wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+        chmod +x /usr/local/bin/run-matlab-command
+      shell: bash
     - name: Configure MATLAB
       run: |
-        export MATLAB_REL=`ls /usr/local/MATLAB`
-        export FLAGS="-batch"
-        ${{ inputs.nojvm }} && export FLAGS="-nojvm $FLAGS"
+        export MATLAB_REL=`run-matlab-command "fprintf(regexp(version, '(?<=\().*(?=\))', 'match', 'once'))"`
         echo "MATLAB_REL=${MATLAB_REL}" >> $GITHUB_ENV
         echo "ML_NAME=MATLAB" >> $GITHUB_ENV
-        echo "ML_CMD=/usr/local/MATLAB/${MATLAB_REL}/bin/matlab $FLAGS" >> $GITHUB_ENV
+        echo "ML_CMD=run-matlab-command" >> $GITHUB_ENV
         echo "ML_PATHVAR=MATLABPATH" >> $GITHUB_ENV
       shell: bash
+#         wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/maca64/run-matlab-command
 #         export MATLAB_VER=`matlab -nojvm -batch "fprintf('%s', ver('matlab').Version)"`
+#         export MATLAB_REL=`ls /opt/hostedtoolcache/MATLAB`
 
     - name: Set MATLAB_VER, ML_VER
       run: |
@@ -86,8 +87,7 @@ runs:
         ${{ inputs.ipopt }} && (${{ inputs.ipopt-cached }} && echo "Include IPOPT - cached - skip fetch" || echo "Fetch IPOPT - not cached") || echo "Skip IPOPT"
         ${{ inputs.ipopt }} && export IPOPT_PATH=$HOME/build/ipopt
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && mkdir -p $IPOPT_PATH
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os == 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_4/ipopt_linux_4.mexa64 --output $IPOPT_PATH/ipopt.mexa64
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os != 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_5/ipopt_linux_5.mexa64 --output $IPOPT_PATH/ipopt.mexa64
+        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_5/ipopt_linux_5.mexa64 --output $IPOPT_PATH/ipopt.mexa64
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt_auxdata.m --output $IPOPT_PATH/ipopt_auxdata.m
         ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt.m --output $IPOPT_PATH/ipopt.m
         ${{ inputs.ipopt }} && echo "IPOPT_PATH=${IPOPT_PATH}" >> $GITHUB_ENV

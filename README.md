@@ -18,6 +18,7 @@ Sets the following environment variables.
 - `MATLAB_REL` set to the release name (e.g. `'R2021a'`) of installed
   [MATLAB][1]
 - `MATLAB_VER` set to the version (e.g. `'9.1.0'`) of installed [MATLAB][1],
+  _(currently set equal to release name instead)_
 - `ML_NAME` set to `MATLAB`
 - `ML_VER` set to same as `MATLAB_VER`
 - `ML_CMD` set to `/usr/local/MATLAB/${MATLAB_REL}/bin/matlab -nojvm -batch`
@@ -27,15 +28,13 @@ Sets the following environment variables.
   _(currently set equal to release name instead)_
 
 __Note:__ This action depends on [MATLAB][1] being installed first, using
-[`matlab-actions/setup-matlab`][4] and currently, as of Aug 25, 2021, works
-on  `ubuntu-18.04`, `ubuntu-20.04` and `ubuntu-latest`.
+[`matlab-actions/setup-matlab`][4] and currently, as of Feb 2, 2024, works
+on  `ubuntu-20.04`, `ubuntu-22.04`,  and `ubuntu-latest`.
 
 ### Optional Inputs
 
-- `os` - (default `'ubuntu-latest'`) required if `ipopt` is `true` to
-  distinguish `ubuntu-18.04` from `ubuntu-20.04`/`ubuntu-latest`
 - `nojvm` - (default `true`) set to `false` to exclude the `-nojvm` flag
-  from the definition of `ML_CMD`
+  from the definition of `ML_CMD` (this option no longer relevant for v2)
 - `ipopt` - (default `false`) if true, include IPOPT interface in
   `~/build/ipopt`
 - `ipopt-cached` - (default `false`) install IPOPT interface from cached build,
@@ -54,10 +53,10 @@ Default Inputs
 ```
     steps:
     - name: Install MATLAB
-      uses: matlab-actions/setup-matlab@v1
+      uses: matlab-actions/setup-matlab@v2
 
     - name: Configure MATLAB
-      uses: MATPOWER/action-configure-matlab@v1
+      uses: MATPOWER/action-configure-matlab@v2
 
     - name: MATLAB ${{ env.ML_VER }} Installed
       run: $ML_CMD ver
@@ -68,7 +67,7 @@ Default Inputs
         env $ML_PATHNAME=$MY_PATH $ML_CMD <my-MATLAB-script>
 ```
 
-With support for JVM, IPOPT, and OSQP
+With support for IPOPT, and OSQP
 ```
     strategy:
       fail-fast: false
@@ -98,14 +97,12 @@ With support for JVM, IPOPT, and OSQP
         key: ${{ env.cache-name }}-${{ matrix.platform }}-${{ matrix.os }}
 
     - name: Install MATLAB
-      uses: matlab-actions/setup-matlab@v1
+      uses: matlab-actions/setup-matlab@v2
 
     - name: Configure MATLAB
       if: matrix.platform == 'matlab'
-      uses: MATPOWER/action-configure-matlab@v1
+      uses: MATPOWER/action-configure-matlab@v2
       with:
-        os: ${{ matrix.os }}
-        nojvm: false
         ipopt: ${{ env.INCLUDE_IPOPT == 1 }}
         ipopt-cached: ${{ steps.cache-ipopt.outputs.cache-hit == 'true' }}
         osqp: ${{ env.INCLUDE_OSQP == 1 }}
