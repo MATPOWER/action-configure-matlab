@@ -33,6 +33,8 @@ on  `ubuntu-20.04`, `ubuntu-22.04`,  and `ubuntu-latest`.
 
 ### Optional Inputs
 
+- `os` - (default `'ubuntu-latest'`) required if `ipopt` is `true` to
+  distinguish `ubuntu-18.04` from `ubuntu-20.04`/`ubuntu-latest`
 - `nojvm` - (default `true`) set to `false` to exclude the `-nojvm` flag
   from the definition of `ML_CMD` (this option no longer relevant for v2)
 - `ipopt` - (default `false`) if true, include IPOPT interface in
@@ -103,6 +105,7 @@ With support for IPOPT, and OSQP
       if: matrix.platform == 'matlab'
       uses: MATPOWER/action-configure-matlab@v2
       with:
+        os: ${{ matrix.os }}
         ipopt: ${{ env.INCLUDE_IPOPT == 1 }}
         ipopt-cached: ${{ steps.cache-ipopt.outputs.cache-hit == 'true' }}
         osqp: ${{ env.INCLUDE_OSQP == 1 }}
