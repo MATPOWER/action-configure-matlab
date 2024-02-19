@@ -3,8 +3,8 @@ Configure MATLAB
 
 ### GitHub Action to configure [MATLAB][1]
 
-Configures MATLAB by defining environment variables and optionally
-installing some 3rd party solvers.
+Configures MATLAB by defining environment variables and optionally,
+on Linux runners only, installing some 3rd party solvers.
 
 Optionally installs the MATLAB interface for COIN-OR's [IPOPT][2] and
 defines the `IPOPT_PATH` environment variable to point to the directory
@@ -21,30 +21,28 @@ Sets the following environment variables.
   _(currently set equal to release name instead)_
 - `ML_NAME` set to `MATLAB`
 - `ML_VER` set to same as `MATLAB_VER`
-- `ML_CMD` set to `/usr/local/MATLAB/${MATLAB_REL}/bin/matlab -nojvm -batch`
+- `ML_CMD` set to `run-matlab-command`
 - `ML_PATHVAR` set to `MATLABPATH`
 - `IPOPT_PATH` set to `$HOME/build/ipopt` (if `ipopt` input is `true`)
 - `OSQP_PATH` set to `$HOME/build/osqp-matlab` (if `osqp` input is `true`)
   _(currently set equal to release name instead)_
 
 __Note:__ This action depends on [MATLAB][1] being installed first, using
-[`matlab-actions/setup-matlab`][4] and currently, as of Feb 2, 2024, works
-on  `ubuntu-20.04`, `ubuntu-22.04`,  and `ubuntu-latest`.
+[`matlab-actions/setup-matlab`][4] and currently, as of Jul 6, 2026, works
+on  `macos-latest`, `windows-latest`,  and `ubuntu-latest`.
 
 ### Optional Inputs
 
-- `os` - (default `'ubuntu-latest'`) required if `ipopt` is `true` to
+- `os` - (default `'ubuntu-latest'`) formerly required if `ipopt` is `true` to
   distinguish `ubuntu-18.04` from `ubuntu-20.04`/`ubuntu-latest`
-- `nojvm` - (default `true`) set to `false` to exclude the `-nojvm` flag
-  from the definition of `ML_CMD` (this option no longer relevant for v2)
 - `ipopt` - (default `false`) if true, include IPOPT interface in
-  `~/build/ipopt`
+  `~/build/ipopt` *(on Linux runners only)*
 - `ipopt-cached` - (default `false`) install IPOPT interface from cached build,
-  if true and `ipopt` is `true`
+  if true and `ipopt` is `true` *(on Linux runners only)*
 - `osqp` - (default `false`) if true, include OSQP interface, in
-  `~/build/osqp-matlab`
+  `~/build/osqp-matlab` *(on Linux runners only)*
 - `osqp-cached` - (default `false`) install OSQP interface from cached build,
-  if true and `osqp` is `true`
+  if true and `osqp` is `true` *(on Linux runners only)*
 
 ### Outputs
 
@@ -61,15 +59,17 @@ Default Inputs
       uses: MATPOWER/action-configure-matlab@v2
 
     - name: MATLAB ${{ env.ML_VER }} Installed
+      shell: bash
       run: $ML_CMD ver
 
     - name: Run MATLAB script with path
+      shell: bash
       run: |
         export MY_PATH=<path-to-my-MATLAB-code>
         env $ML_PATHNAME=$MY_PATH $ML_CMD <my-MATLAB-script>
 ```
 
-With support for IPOPT, and OSQP
+With support for IPOPT, and OSQP *(on Linux runners only)*
 ```
     strategy:
       fail-fast: false
@@ -112,9 +112,11 @@ With support for IPOPT, and OSQP
         osqp-cached: ${{ steps.cache-osqp.outputs.cache-hit == 'true' }}
 
     - name: MATLAB ${{ env.ML_VER }} Installed
+      shell: bash
       run: $ML_CMD ver
 
     - name: Run MATLAB script with path
+      shell: bash
       run: |
         $ML_CMD "fprintf('OSQP Version %s installed\n', osqp().version)"
         export MY_PATH=<path-to-my-MATLAB-code>

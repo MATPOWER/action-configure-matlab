@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -27,30 +27,29 @@ jobs:
       uses: ./.
 
     - name: MATLAB ${{ env.ML_VER }} Installed
-      run: $ML_CMD ver
-
-    - name: Configure MATLAB w/JVM
-      uses: ./.
-      with:
-        nojvm: false
-
-    - name: MATLAB ${{ env.ML_VER }} Installed
+      shell: bash
       run: $ML_CMD ver
 
     - name: Configure MATLAB w/OSQP
+      if: runner.os == 'Linux'
       uses: ./.
       with:
         osqp: true
 
     - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
+      if: runner.os == 'Linux'
+      shell: bash
       run: $ML_CMD "fprintf('OSQP Version %s installed', osqp().version)"
 
     - name: Configure MATLAB w/IPOPT
+      if: runner.os == 'Linux'
       uses: ./.
       with:
         ipopt: true
 
     - name: MATLAB ${{ env.ML_VER }} with IPOPT Installed
+      if: runner.os == 'Linux'
+      shell: bash
       run: |
         export IPOPT_TEST_PATH=${GITHUB_WORKSPACE}/.github/ipopt
         ls -al $IPOPT_PATH
