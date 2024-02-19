@@ -33,7 +33,8 @@ runs:
   steps:
     - name: Get run-matlab-command
       run: |
-        wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+        ${{ runner.os == 'ubuntu' }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+        ${{ runner.os == 'macos'  }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/maca64/run-matlab-command
         chmod +x /usr/local/bin/run-matlab-command
       shell: bash
     - name: Configure MATLAB
@@ -44,7 +45,6 @@ runs:
         echo "ML_CMD=run-matlab-command" >> $GITHUB_ENV
         echo "ML_PATHVAR=MATLABPATH" >> $GITHUB_ENV
       shell: bash
-#         wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/maca64/run-matlab-command
 #         export MATLAB_VER=`matlab -nojvm -batch "fprintf('%s', ver('matlab').Version)"`
 #         export MATLAB_REL=`ls /opt/hostedtoolcache/MATLAB`
 
