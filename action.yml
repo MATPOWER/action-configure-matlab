@@ -33,8 +33,8 @@ runs:
   steps:
     - name: Get run-matlab-command
       run: |
-        ${{ runner.os == 'ubuntu' }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
-        ${{ runner.os == 'macos'  }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/maca64/run-matlab-command
+        ${{ startsWith(runner.os, 'ubuntu') }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+        ${{ startsWith(runner.os, 'macos')  }} && wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/maca64/run-matlab-command
         chmod +x /usr/local/bin/run-matlab-command
       shell: bash
     - name: Configure MATLAB
