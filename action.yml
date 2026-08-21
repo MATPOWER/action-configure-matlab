@@ -27,6 +27,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Create Documents/MATLAB dir.
+      run: |
+        mkdir -p "$HOME/Documents/MATLAB"
+        echo "-"
+      shell: bash
+
     - name: Get run-matlab-command (Linux)
       if: runner.os == 'Linux'
       run: |
@@ -75,57 +81,97 @@ runs:
         export MATLAB_VER=${MATLAB_REL}
         echo "MATLAB_VER=${MATLAB_VER}" >> $GITHUB_ENV
         echo "ML_VER=${MATLAB_VER}" >> $GITHUB_ENV
+        echo "-"
       shell: bash
 
     - name: Build OSQP
+      if: ${{ fromJSON(inputs.osqp) && !fromJSON(inputs.osqp-cached) }}
       run: |
-        ${{ inputs.osqp }} && (${{ inputs.osqp-cached }} && echo "Include OSQP - cached - skip build" || echo "Build OSQP - not cached") || echo "Skip OSQP"
-        ${{ inputs.osqp }} && export OSQP_PATH=$HOME/build/osqp-matlab
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && [ ! -d $HOME/build ] && mkdir -p $HOME/build
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cd $HOME/build
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && git clone --recursive https://github.com/oxfordcontrol/osqp
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && git clone --recurse-submodules https://github.com/oxfordcontrol/osqp-matlab
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && mkdir -p $HOME/build/osqp/build
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && [ ! -d $HOME/install ] && mkdir -p $HOME/install
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cd $HOME/build/osqp/build
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cmake -DCMAKE_INSTALL_PREFIX=$HOME/install -G "Unix Makefiles" ..
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cmake --build .
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cmake --install .
-        ${{ inputs.osqp }} && echo "OSQP_PATH=${OSQP_PATH}" >> $GITHUB_ENV
+        echo "Build OSQP - not cached"
+        export OSQP_PATH=$HOME/build/osqp-matlab
+        [ ! -d $HOME/build ] && mkdir -p $HOME/build
+        cd $HOME/build
+        git clone --recursive https://github.com/oxfordcontrol/osqp
+        git clone --recurse-submodules https://github.com/oxfordcontrol/osqp-matlab
+        mkdir -p $HOME/build/osqp/build
+        [ ! -d $HOME/install ] && mkdir -p $HOME/install
+        cd $HOME/build/osqp/build
+        cmake -DCMAKE_INSTALL_PREFIX=$HOME/install -G "Unix Makefiles" ..
+        cmake --build .
+        cmake --install .
+        echo "OSQP_PATH=${OSQP_PATH}" >> $GITHUB_ENV
         echo "-"
       shell: bash
 
-    - name: Build and install OSQP MATLAB interface
+    - name: Use cached OSQP
+      if: ${{ fromJSON(inputs.osqp) && fromJSON(inputs.osqp-cached) }}
       run: |
-        ${{ inputs.osqp }} && echo "Install OSQP interface" || echo "Skip OSQP interface"
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && ls -al $HOME/install/include/osqp
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && cd $HOME/build/osqp-matlab
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && $ML_CMD "make_osqp"
-        ${{ inputs.osqp }} && ! ${{ inputs.osqp-cached }} && ls -al
-        ${{ inputs.osqp }} && echo "$ML_CMD \"addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        ${{ inputs.osqp }} && $ML_CMD "addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        echo "Include OSQP - cached - skip build"
+        export OSQP_PATH=$HOME/build/osqp-matlab
+        echo "OSQP_PATH=${OSQP_PATH}" >> $GITHUB_ENV
         echo "-"
       shell: bash
 
-    # expects that Octave and IPOPT libraries have already been installed
-    - name: Fetch IPOPT MATLAB interface
+    - name: Build OSQP MATLAB interface
+      if: ${{ fromJSON(inputs.osqp) && !fromJSON(inputs.osqp-cached) }}
       run: |
-        ${{ inputs.ipopt }} && (${{ inputs.ipopt-cached }} && echo "Include IPOPT - cached - skip fetch" || echo "Fetch IPOPT - not cached") || echo "Skip IPOPT"
-        ${{ inputs.ipopt }} && export IPOPT_PATH=$HOME/build/ipopt
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && mkdir -p $IPOPT_PATH
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os == 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_4/ipopt_linux_4.mexa64 --output $IPOPT_PATH/ipopt.mexa64
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && ${{ inputs.os != 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_5/ipopt_linux_5.mexa64 --output $IPOPT_PATH/ipopt.mexa64
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt_auxdata.m --output $IPOPT_PATH/ipopt_auxdata.m
-        ${{ inputs.ipopt }} && ! ${{ inputs.ipopt-cached }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt.m --output $IPOPT_PATH/ipopt.m
-        ${{ inputs.ipopt }} && echo "IPOPT_PATH=${IPOPT_PATH}" >> $GITHUB_ENV
+        echo "Build OSQP interface"
+        ls -al $HOME/install/include/osqp
+        cd $HOME/build/osqp-matlab
+        $ML_CMD "make_osqp"
+        ls -al
+      shell: bash
+
+    - name: Install OSQP MATLAB interface
+      if: ${{ fromJSON(inputs.osqp) }}
+      run: |
+        echo "Install OSQP interface" 
+        echo "$ML_CMD \"addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
+        $ML_CMD "addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        echo "-"
+      shell: bash
+
+    # expects that IPOPT libraries have already been installed
+    - name: Fetch IPOPT MATLAB interface (Linux)
+      if: ${{ (runner.os == 'Linux') && fromJSON(inputs.ipopt) && !fromJSON(inputs.ipopt-cached) }}
+      run: |
+        echo "Fetch IPOPT - not cached"
+        export IPOPT_PATH=$HOME/build/ipopt
+        mkdir -p $IPOPT_PATH
+        ${{ inputs.os == 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_4/ipopt_linux_4.mexa64 --output $IPOPT_PATH/ipopt.mexa64
+        ${{ inputs.os != 'ubuntu-18.04' }} && curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/bin/linux_5/ipopt_linux_5.mexa64 --output $IPOPT_PATH/ipopt.mexa64
+        curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt_auxdata.m --output $IPOPT_PATH/ipopt_auxdata.m
+        curl -SL https://github.com/ebertolazzi/mexIPOPT/raw/master/toolbox/lib/ipopt.m --output $IPOPT_PATH/ipopt.m
+        echo "IPOPT_PATH=${IPOPT_PATH}" >> $GITHUB_ENV
+        echo "-"
+      shell: bash
+
+    - name: Fetch IPOPT MATLAB interface (Windows)
+      if: ${{ (runner.os == 'Windows') && fromJSON(inputs.ipopt) && !fromJSON(inputs.ipopt-cached) }}
+      run: |
+        echo "Fetching of IPOPT MATLAB interface for Windows not yet implemented"
+      shell: bash
+
+    - name: Fetch IPOPT MATLAB interface (macOS)
+      if: ${{ (runner.os == 'macOS') && fromJSON(inputs.ipopt) && !fromJSON(inputs.ipopt-cached) }}
+      run: |
+        echo "Fetching of IPOPT MATLAB interface for macOS not yet implemented"
+      shell: bash
+
+    - name: Prepare cached IPOPT MATLAB interface
+      if: ${{ fromJSON(inputs.ipopt) && fromJSON(inputs.ipopt-cached) }}
+      run: |
+        echo "Include IPOPT - cached - skip fetch"
+        echo "IPOPT_PATH=${IPOPT_PATH}" >> $GITHUB_ENV
         echo "-"
       shell: bash
 
     - name: Install IPOPT MATLAB interface
+      if: ${{ fromJSON(inputs.ipopt) }}
       run: |
-        ${{ inputs.ipopt }} && echo "Install IPOPT interface" || echo "Skip IPOPT interface"
-        ${{ inputs.ipopt }} && echo "$ML_CMD \"addpath('${IPOPT_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        ${{ inputs.ipopt }} && $ML_CMD "addpath('${IPOPT_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        echo "Install IPOPT interface"
+        echo "$ML_CMD \"addpath('${IPOPT_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
+        $ML_CMD "addpath('${IPOPT_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 

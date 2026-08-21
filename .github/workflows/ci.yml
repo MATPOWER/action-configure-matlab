@@ -42,7 +42,6 @@ jobs:
       run: $ML_CMD "fprintf('OSQP Version %s installed', osqp().version)"
 
     - name: Configure MATLAB w/IPOPT
-      if: runner.os == 'Linux'
       uses: ./.
       with:
         ipopt: true
