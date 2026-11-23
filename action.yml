@@ -97,7 +97,7 @@ runs:
         git clone  --depth=1 https://github.com/rdzman/HiGHSMEX ${HIGHSMEX_PATH}
         ls -l ${HIGHSMEX_PATH}
         echo "echo HIGHSMEX_PATH"
-        echo ${HIGSMEX_PATH}
+        echo ${HIGHSMEX_PATH}
         $ML_CMD "fprintf('(in MATLAB) HIGHSMEX_PATH=%s\n', ''${HIGHSMEX_PATH}'); fprintf('pwd=%s\n', pwd); disp('path'); path"
         echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
