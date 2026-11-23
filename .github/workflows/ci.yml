@@ -46,7 +46,7 @@ jobs:
 
     - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
       shell: bash
-      run: $ML_CMD "fprintf('OSQP Version %s installed', osqp().version)"
+      run: $ML_CMD "which osqp; fprintf('OSQP Version %s installed', osqp().version)"
 
     - name: Configure MATLAB w/IPOPT
       uses: ./.
