@@ -94,6 +94,9 @@ runs:
         echo "Install HiGHSMEX interface"
         export HIGHSMEX_PATH=$HOME/HiGHSMEX
         git clone  --depth=1 https://github.com/rdzman/HiGHSMEX
+        pwd
+        ls -l HiGHSMEX
+        ls -l ${HIGHSMEX_PATH}
         echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
