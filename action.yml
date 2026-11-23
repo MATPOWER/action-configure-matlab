@@ -12,7 +12,7 @@ inputs:
     required: false
     default: false
   ipopt:
-    description: 'builds and installs IPOPT interface, if true (default = false)'
+    description: 'builds and installs IPOPT interface (Linux only), if true (default = false)'
     required: false
     default: false
   ipopt-cached:
@@ -20,11 +20,7 @@ inputs:
     required: false
     default: false
   osqp:
-    description: 'builds and installs OSQP interface, if true (default = false)'
-    required: false
-    default: false
-  osqp-cached:
-    description: 'true means OSQP is installing from a cached build'
+    description: 'installs OSQP interface (Linux only), if true (default = false)'
     required: false
     default: false
 
@@ -102,11 +98,11 @@ runs:
       shell: bash
 
     - name: Install OSQP MATLAB interface
-      if: ${{ fromJSON(inputs.osqp) }}
+      if: ${{ fromJSON(inputs.osqp) }} && runner.os == 'Linux'
       run: |
         echo "Install OSQP interface"
         echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp\""
-        $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; fprintf('which osqp\n'); which osqp, ; savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
