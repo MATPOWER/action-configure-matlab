@@ -94,58 +94,19 @@ runs:
         echo "Install HiGHSMEX interface"
         export HIGHSMEX_PATH=$HOME/install/HiGHSMEX
         [ ! -d $HOME/install ] && mkdir -p $HOME/install
-        cd $HOME/install
-        git clone  --depth=1 https://github.com/rdzman/HiGHSMEX
+        git clone  --depth=1 https://github.com/rdzman/HiGHSMEX ${HIGHSMEX_PATH}
         ls -l ${HIGHSMEX_PATH}
         echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
-    - name: Build OSQP
-      if: ${{ fromJSON(inputs.osqp) && !fromJSON(inputs.osqp-cached) }}
-      run: |
-        echo "Build OSQP - not cached"
-        export OSQP_PATH=$HOME/build/osqp-matlab
-        [ ! -d $HOME/build ] && mkdir -p $HOME/build
-        cd $HOME/build
-        git clone --recursive https://github.com/oxfordcontrol/osqp
-        git clone --recurse-submodules https://github.com/oxfordcontrol/osqp-matlab
-        mkdir -p $HOME/build/osqp/build
-        [ ! -d $HOME/install ] && mkdir -p $HOME/install
-        cd $HOME/build/osqp/build
-        cmake -DCMAKE_INSTALL_PREFIX=$HOME/install -G "Unix Makefiles" ..
-        cmake --build .
-        cmake --install .
-        echo "OSQP_PATH=${OSQP_PATH}" >> $GITHUB_ENV
-        echo "-"
-      shell: bash
-
-    - name: Use cached OSQP
-      if: ${{ fromJSON(inputs.osqp) && fromJSON(inputs.osqp-cached) }}
-      run: |
-        echo "Include OSQP - cached - skip build"
-        export OSQP_PATH=$HOME/build/osqp-matlab
-        echo "OSQP_PATH=${OSQP_PATH}" >> $GITHUB_ENV
-        echo "-"
-      shell: bash
-
-    - name: Build OSQP MATLAB interface
-      if: ${{ fromJSON(inputs.osqp) && !fromJSON(inputs.osqp-cached) }}
-      run: |
-        echo "Build OSQP interface"
-        ls -al $HOME/install/include/osqp
-        cd $HOME/build/osqp-matlab
-        $ML_CMD "make_osqp"
-        ls -al
-      shell: bash
-
     - name: Install OSQP MATLAB interface
       if: ${{ fromJSON(inputs.osqp) }}
       run: |
-        echo "Install OSQP interface" 
-        echo "$ML_CMD \"addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        $ML_CMD "addpath('${OSQP_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        echo "Install OSQP interface"
+        echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp\""
+        $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp"
         echo "-"
       shell: bash
 

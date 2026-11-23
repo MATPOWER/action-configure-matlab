@@ -40,13 +40,11 @@ jobs:
       run: $ML_CMD "fprintf('HiGHS Version %s installed\nHiGHSMEX Version %s installed\n', callhighs(string('ver')), verHiGHSMEX)"
 
     - name: Configure MATLAB w/OSQP
-      if: runner.os == 'Linux'
       uses: ./.
       with:
         osqp: true
 
     - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
-      if: runner.os == 'Linux'
       shell: bash
       run: $ML_CMD "fprintf('OSQP Version %s installed', osqp().version)"
 
