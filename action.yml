@@ -96,11 +96,8 @@ runs:
         [ ! -d $HOME/install ] && mkdir -p $HOME/install
         git clone  --depth=1 https://github.com/rdzman/HiGHSMEX ${HIGHSMEX_PATH}
         ls -l ${HIGHSMEX_PATH}
-        echo "echo HIGHSMEX_PATH"
-        echo ${HIGHSMEX_PATH}
-        $ML_CMD "fprintf('In MATLAB:\nHIGHSMEX_PATH=''${HIGHSMEX_PATH}''\n'); getenv('HOME'), getenv('USERPROFILE')"
-        echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        echo "$ML_CMD \"addpath(fullfile(env('HOME'), 'install', 'HiGHSMEX')); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
+        $ML_CMD "addpath(fullfile(env('HOME'), 'install', 'HiGHSMEX')); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
@@ -109,7 +106,7 @@ runs:
       run: |
         echo "Install OSQP interface"
         echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp\""
-        $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; fprintf('which osqp\n'); which osqp"
+        $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; fprintf('which osqp\n'); which osqp, ; savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
