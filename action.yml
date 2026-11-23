@@ -7,6 +7,10 @@ inputs:
     description: 'required for ipopt to distinguish ubuntu-18.04 from 20.04/latest'
     required: false
     default: 'ubuntu-latest'
+  highsmex:
+    description: 'installs HiGHSMEX interface, if true (default = false)'
+    required: false
+    default: false
   ipopt:
     description: 'builds and installs IPOPT interface, if true (default = false)'
     required: false
@@ -81,6 +85,17 @@ runs:
         export MATLAB_VER=${MATLAB_REL}
         echo "MATLAB_VER=${MATLAB_VER}" >> $GITHUB_ENV
         echo "ML_VER=${MATLAB_VER}" >> $GITHUB_ENV
+        echo "-"
+      shell: bash
+
+    - name: Install HiGHSMEX MATLAB interface
+      if: ${{ fromJSON(inputs.highsmex) }}
+      run: |
+        echo "Install HiGHSMEX interface"
+        export HIGHSMEX_PATH=$HOME/HiGHSMEX
+        git clone  --depth=1 https://github.com/rdzman/HiGHSMEX
+        echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
+        $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 

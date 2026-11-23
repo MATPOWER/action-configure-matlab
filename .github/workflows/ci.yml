@@ -30,6 +30,15 @@ jobs:
       shell: bash
       run: $ML_CMD ver
 
+    - name: Configure MATLAB w/HiGHSMEX
+      uses: ./.
+      with:
+        highsmex: true
+
+    - name: MATLAB ${{ env.ML_VER }} with HiGHSMEX Installed
+      shell: bash
+      run: $ML_CMD "fprintf('HiGHS Version %s installed\nHiGHSMEX Version %s installed\n', callhighs(string('ver')), verHiGHSMEX)"
+
     - name: Configure MATLAB w/OSQP
       if: runner.os == 'Linux'
       uses: ./.
