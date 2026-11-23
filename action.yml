@@ -97,7 +97,7 @@ runs:
         git clone  --depth=1 https://github.com/rdzman/HiGHSMEX ${HIGHSMEX_PATH}
         ls -l ${HIGHSMEX_PATH}
         echo "$ML_CMD \"addpath(fullfile(env('HOME'), 'install', 'HiGHSMEX')); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        $ML_CMD "addpath(fullfile(env('HOME'), 'install', 'HiGHSMEX')); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        $ML_CMD "addpath(fullfile(getenv('HOME'), 'install', 'HiGHSMEX')); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
