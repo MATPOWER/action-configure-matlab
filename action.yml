@@ -98,7 +98,7 @@ runs:
         ls -l ${HIGHSMEX_PATH}
         echo "echo HIGHSMEX_PATH"
         echo ${HIGHSMEX_PATH}
-        $ML_CMD "fprintf('In MATLAB:\nHIGHSMEX_PATH=''${HIGHSMEX_PATH}''\n'); getenv('HOME'), getenv('USERPROFILE'))"
+        $ML_CMD "fprintf('In MATLAB:\nHIGHSMEX_PATH=''${HIGHSMEX_PATH}''\n'); getenv('HOME'), getenv('USERPROFILE')"
         echo "$ML_CMD \"addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         $ML_CMD "addpath('${HIGHSMEX_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
