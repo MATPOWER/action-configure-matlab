@@ -92,7 +92,7 @@ runs:
       if: ${{ fromJSON(inputs.highsmex) }}
       run: |
         echo "Install HiGHSMEX interface"
-        export HIGHSMEX_PATH=$HOME/HiGHSMEX
+        export HIGHSMEX_PATH=$HOME/install/HiGHSMEX
         [ ! -d $HOME/install ] && mkdir -p $HOME/install
         cd $HOME/install
         git clone  --depth=1 https://github.com/rdzman/HiGHSMEX
