@@ -97,12 +97,13 @@ runs:
         echo "-"
       shell: bash
 
-    - name: Install OSQP MATLAB interface
+    - name: Install OSQP MATLAB interface (macOS)
       if: ${{ fromJSON(inputs.osqp) }} && (runner.os == 'macOS')
       run: |
         echo "Installing OSQP MATLAB interface for macOS not yet implemented"
+      shell: bash
 
-    - name: Install OSQP MATLAB interface
+    - name: Install OSQP MATLAB interface (Linux/Windows)
       if: ${{ fromJSON(inputs.osqp) }} && (runner.os != 'macOS')
       run: |
         echo "Install OSQP interface"
