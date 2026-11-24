@@ -48,7 +48,7 @@ jobs:
     - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
       if: (runner.os == 'Linux') || (runner.os == 'Windows')
       shell: bash
-      run: $ML_CMD "which osqp; fprintf('OSQP Version %s installed', osqp().version)"
+      run: $ML_CMD "which osqp; fprintf('OSQP Version %s installed\n', osqp().version)"
 
     - name: Configure MATLAB w/IPOPT
       if: (runner.os == 'Linux') || (runner.os == 'Windows')
