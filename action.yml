@@ -98,10 +98,10 @@ runs:
       shell: bash
 
     - name: Install OSQP MATLAB interface
-      if: ${{ fromJSON(inputs.osqp) }} && runner.os == 'Linux'
+      if: ${{ fromJSON(inputs.osqp) }} && (runner.os != 'macOS')
       run: |
         echo "Install OSQP interface"
-        echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp\""
+        echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         $ML_CMD "websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash

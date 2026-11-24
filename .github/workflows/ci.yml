@@ -40,21 +40,24 @@ jobs:
       run: $ML_CMD "fprintf('HiGHS Version %s installed\nHiGHSMEX Version %s installed\n', callhighs(string('ver')), verHiGHSMEX)"
 
     - name: Configure MATLAB w/OSQP
+      if: (runner.os == 'Linux') || (runner.os == 'Windows')
       uses: ./.
       with:
         osqp: true
 
     - name: MATLAB ${{ env.ML_VER }} with OSQP Installed
+      if: (runner.os == 'Linux') || (runner.os == 'Windows')
       shell: bash
       run: $ML_CMD "which osqp; fprintf('OSQP Version %s installed', osqp().version)"
 
     - name: Configure MATLAB w/IPOPT
+      if: (runner.os == 'Linux') || (runner.os == 'Windows')
       uses: ./.
       with:
         ipopt: true
 
     - name: MATLAB ${{ env.ML_VER }} with IPOPT Installed
-      if: runner.os == 'Linux'
+      if: (runner.os == 'Linux') || (runner.os == 'Windows')
       shell: bash
       run: |
         export IPOPT_TEST_PATH=${GITHUB_WORKSPACE}/.github/ipopt
