@@ -98,13 +98,13 @@ runs:
       shell: bash
 
     - name: Install OSQP MATLAB interface (macOS)
-      if: ${{ fromJSON(inputs.osqp) }} && (runner.os == 'macOS')
+      if: ${{ (runner.os == 'macOS') && fromJSON(inputs.osqp) }}
       run: |
         echo "Installing OSQP MATLAB interface for macOS not yet implemented"
       shell: bash
 
     - name: Install OSQP MATLAB interface (Linux/Windows)
-      if: ${{ fromJSON(inputs.osqp) }} && (runner.os != 'macOS')
+      if: ${{ (runner.os != 'macOS') && fromJSON(inputs.osqp) }}
       run: |
         echo "Install OSQP interface"
         echo "$ML_CMD \"websave('install_osqp.m','https://raw.githubusercontent.com/osqp/osqp-matlab/master/package/install_osqp.m'); install_osqp; savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
@@ -154,7 +154,7 @@ runs:
       shell: bash
 
     - name: Install IPOPT MATLAB interface
-      if: ${{ fromJSON(inputs.ipopt) }} && (runner.os != 'Windows')
+      if: ${{ (runner.os != 'Windows') && fromJSON(inputs.ipopt) }}
       run: |
         echo "Install IPOPT interface"
         echo "$ML_CMD \"addpath('${IPOPT_PATH}'); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
@@ -163,7 +163,7 @@ runs:
       shell: bash
 
     - name: Install IPOPT MATLAB interface
-      if: ${{ fromJSON(inputs.ipopt) }} && (runner.os == 'Windows')
+      if: ${{ (runner.os == 'Windows') && fromJSON(inputs.ipopt) }}
       run: |
         echo "Install IPOPT interface"
         echo "$ML_CMD \"opti_Install; savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
