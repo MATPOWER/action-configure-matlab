@@ -132,9 +132,9 @@ runs:
       run: |
         echo "Fetch IPOPT - not cached"
         export OPTI_PATH=$HOME/install/OPTI
-        [ ! -d ${IPOPT_PATH} ] && mkdir -p ${IPOPT_PATH}
+        [ ! -d $HOME/install ] && mkdir -p $HOME/install
         git clone  --depth=1 https://github.com/jonathancurrie/OPTI ${OPTI_PATH}
-        echo "IPOPT_PATH=${IPOPT_PATH}" >> $GITHUB_ENV
+        echo "OPTI_PATH=${OPTI_PATH}" >> $GITHUB_ENV
         echo "-"
       shell: bash
 
@@ -166,7 +166,7 @@ runs:
       run: |
         echo "Install IPOPT interface"
         echo "$ML_CMD \"opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        $ML_CMD "addpath('${OPTI_PATH}'); opti_Install(0,0,0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        env $ML_PATHVAR=$OPTI_PATH $ML_CMD "opti_Install(0,0,0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
