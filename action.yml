@@ -165,7 +165,6 @@ runs:
       if: ${{ (runner.os == 'Windows') && fromJSON(inputs.ipopt) }}
       run: |
         echo "Install IPOPT interface"
-        cd $OPTI_PATH
         echo "$ML_CMD \"opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
         env $ML_PATHVAR=$OPTI_PATH $ML_CMD "opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
