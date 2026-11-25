@@ -166,7 +166,7 @@ runs:
       run: |
         echo "Install IPOPT interface"
         echo "$ML_CMD \"opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        env $ML_PATHVAR=$OPTI_PATH $ML_CMD "opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        $ML_CMD "addpath('${OPTI_PATH}'); opti_Install(0,0,0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
