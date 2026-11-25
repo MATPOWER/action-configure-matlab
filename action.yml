@@ -134,6 +134,7 @@ runs:
         export OPTI_PATH=$HOME/install/OPTI
         [ ! -d $HOME/install ] && mkdir -p $HOME/install
         git clone  --depth=1 https://github.com/jonathancurrie/OPTI ${OPTI_PATH}
+        ls -l ${OPTI_PATH}
         echo "OPTI_PATH=${OPTI_PATH}" >> $GITHUB_ENV
         echo "-"
       shell: bash
@@ -166,7 +167,7 @@ runs:
       run: |
         echo "Install IPOPT interface"
         echo "$ML_CMD \"opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        $ML_CMD "cwd=pwd; cd $OPTI_PATH; opti_Install(0,0,0); cd(cwd); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        $ML_CMD "cwd=pwd; cd(fullfile(getenv('HOME'), 'install', 'OPTI')); opti_Install(0,0,0); cd(cwd); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
