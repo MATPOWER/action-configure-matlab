@@ -131,7 +131,6 @@ runs:
       if: ${{ (runner.os == 'Windows') && fromJSON(inputs.ipopt) && !fromJSON(inputs.ipopt-cached) }}
       run: |
         echo "Fetch IPOPT - not cached"
-        export IPOPT_PATH=$HOME/install/ipopt
         export OPTI_PATH=$HOME/install/OPTI
         [ ! -d ${IPOPT_PATH} ] && mkdir -p ${IPOPT_PATH}
         git clone  --depth=1 https://github.com/jonathancurrie/OPTI ${OPTI_PATH}
@@ -166,8 +165,9 @@ runs:
       if: ${{ (runner.os == 'Windows') && fromJSON(inputs.ipopt) }}
       run: |
         echo "Install IPOPT interface"
-        echo "$ML_CMD \"opti_Install; savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
-        env $ML_PATHVAR=$OPTI_PATH $ML_CMD "opti_Install; savepath('${GITHUB_WORKSPACE}/pathdef.m')"
+        cd $OPTI_PATH
+        echo "$ML_CMD \"opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')\""
+        env $ML_PATHVAR=$OPTI_PATH $ML_CMD "opti_Install(1, 0, 0); savepath('${GITHUB_WORKSPACE}/pathdef.m')"
         echo "-"
       shell: bash
 
